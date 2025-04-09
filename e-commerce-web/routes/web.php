@@ -16,16 +16,5 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/admin/dashboard', function () {
-        return view('dashboard.admin');
-    })->name('admin.dashboard');
-});
-
-Route::middleware(['auth', 'role:client'])->group(function () {
-    Route::get('/client/dashboard', function () {
-        return view('dashboard.client');
-    })->name('client.dashboard');
-});
 
 require __DIR__.'/auth.php';

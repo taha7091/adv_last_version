@@ -8,9 +8,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
-use App\Providers\RouteServiceProvider;
-
-use Illuminate\Validation\ValidationException;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -25,26 +22,14 @@ class AuthenticatedSessionController extends Controller
     /**
      * Handle an incoming authentication request.
      */
-    public function store(Request $request): RedirectResponse
-{
-    $request->validate([
-        'email' => ['required', 'email'],
-        'password' => ['required'],
-    ]);
+    public function store(LoginRequest $request): RedirectResponse
+    {
+        $request->authenticate();
 
-    if (! Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
-        throw ValidationException::withMessages([
-            'email' => __('auth.failed'),
-        ]);
+        $request->session()->regenerate();
+
+        return redirect()->intended(route('dashboard', absolute: false));
     }
-
-    $request->session()->regenerate();
-
-    return redirect()->intended(RouteServiceProvider::HOME);
-
-
-    }
-    
 
     /**
      * Destroy an authenticated session.
